@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - gem_cache:/gems
+    env_file:
+      - .env
+      - .env-dev-values
+
+  database:
+    image: mariadb
+    volumes:
+      - db_data:/var/lib/mysql
+    env_file:
+      - .env-dev-values
+
+volumes:
+  gem_cache:
+  db_data:
