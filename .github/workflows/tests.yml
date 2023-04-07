@@ -4,7 +4,7 @@ on: push
 
 jobs:
   # Run tests
-  monitor_test: 
+  test: 
     runs-on: ubuntu-latest
 
     services:
@@ -30,8 +30,6 @@ jobs:
           cat .env-actions .env-example > .env
       - name: Load .env file
         uses: xom9ikk/dotenv@v2
-        with:
-          path: monitor
       - name: Setup up node 18
         uses: actions/setup-node@v3
         with:
