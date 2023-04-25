@@ -2,7 +2,7 @@
 
 This is a system for monitoring the completion of sidekiq jobs. 
 
-There are two api endpoints
+## API Endpoints
 
 ```
 post /api/v1/jobs
@@ -49,7 +49,8 @@ making http request is fine.
 
 ### Sidekiq Client / Queuer
 
-Any application that queues jobs needs to have the following middleware:
+Any application that queues jobs needs to have the following middleware to let
+the supervisor know that a job has been queued:
 
 ```ruby
 class JobQueued
@@ -72,8 +73,8 @@ end
 ```
 
 ### The Sidekiq Server / Worker
-Your sidekiq workers (or server) needs to have the following middleware so they
-can check with the supervisor. 
+Each sidekiq worker (or server) needs to have the following middleware so they
+can check in or out with the supervisor. 
 
 ```ruby
 class CheckInCheckOut
@@ -102,3 +103,39 @@ end
 
 ```
 
+## Monitoring and requeuing jobs in the console
+
+There is a `JobManager` with methods that help manage jobs that have checked in
+with the supervisor. Every method takes in an optional string that filters the
+results based on if the string matches something in the arguments for the job.
+
+```ruby
+bundle exec rails c
+
+# Shows a list of jobs whose most recent status is "queued". 
+JobManager.queued_jobs("optional string")
+
+
+# Shows a list of jobs whose most recent status is "started". 
+JobManager.uncompleted_jobs("optional string")
+
+# Shows a list of jobs whose most recent status is "complete".
+JobManager.completed_jobs("optional string")
+
+
+# Shows a list of all jobs. 
+JobManager.jobs("optional string")
+
+# Displays a list of jobs and how long it took for the job to go from queued to completed
+JobManager.queued_to_completion_duration("optional string")
+
+
+# Displays a list of jobs and how long it took for the job to go from started to completed
+JobManager.completed_jobs_duration("optional string")
+
+# Queues uncompleted jobs. Deletes the original job from the database.
+# restart_uncompleted_jobs("optional string")
+```
+
+## Sidekiq monitor gui
+The route `/sidekiq` goes to the sidekiq monitoring app.

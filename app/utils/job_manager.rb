@@ -51,8 +51,6 @@ module JobManager
     str.nil? ? Job.all : Job.for_job_string(str)
   end
 
-  private
-
   def human_readable_time(secs)
     # from https://gist.github.com/emmahsax/af285a4b71d8506a1625a3e591dc993b
     [[60, :seconds], [60, :minutes], [24, :hours], [Float::INFINITY, :days]].map do |count, name|
