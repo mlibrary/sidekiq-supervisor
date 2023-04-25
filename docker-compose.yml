@@ -19,6 +19,15 @@ services:
     env_file:
       - .env-dev-values
 
+  redis:
+    image: 'redis:6.2'
+    command: redis-server
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis:/data'
+
 volumes:
   gem_cache:
   db_data:
+  redis:
