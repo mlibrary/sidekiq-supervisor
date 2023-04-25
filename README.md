@@ -47,7 +47,7 @@ Which takes in the following parameters
 
 ## How to add Sidekiq monitor to your application
 
-These examples uses the Faraday gem to contact the supervior. Any means of
+These examples uses the [Faraday](https://lostisland.github.io/faraday/) gem to contact the supervior. Any means of
 making http request is fine.
 
 ### Sidekiq Client / Queuer
@@ -58,7 +58,7 @@ the supervisor know that a job has been queued:
 ```ruby
 class JobQueued
   def call(worker, job, queue, redis_pool)
-    response = Faraday.post("#{ENV.fetch("INDEXING_MONITOR_HOST")}/api/v1/jobs", {
+    response = Faraday.post("#{ENV.fetch("SIDEDIQ_SUPERVISOR_HOST")}/api/v1/jobs", {
       job_id: job["jid"],
       arguments: job["args"].to_json,
       job_class: job["class"],
@@ -98,7 +98,6 @@ end
 
 
 Sidekiq.configure_server do |config|
-  Yabeda::Prometheus::Exporter.start_metrics_server!
   config.server_middleware do |chain|
     chain.add CheckInCheckOut
   end
