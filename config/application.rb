@@ -1,35 +1,26 @@
 require_relative "boot"
 
-#require "rails/all"
+# require "rails/all"
 require "rails"
 require "sidekiq"
 
-#this is documentation of what's been removed
-removed = %(
-  action_mailer/railtie
-  action_mailbox/engine
-  active_storage/engine
-  action_text/engine
-)
+# this is what's been turned off
+# require  action_mailer/railtie
+# require  action_mailbox/engine
+# require  active_storage/engine
+# require  action_text/engine
+# require "rails/test_unit/railtie"
 
-%w(
-  active_record/railtie
-  action_controller/railtie
-  action_view/railtie
-  active_job/railtie
-  action_cable/engine
-  rails/test_unit/railtie
-).each do |railtie|
-  begin
-    require railtie
-  rescue LoadError
-  end
-end
+require "active_record/railtie"
+require "action_controller/railtie"
+require "action_view/railtie"
+require "active_job/railtie"
+require "action_cable/engine"
 
 # This sidekiq middleware calls this api to queue a new job
 class QueueJob
   def call(worker, job, queue, redis_pool)
-    response = Faraday.post("http://localhost:3000/api/v1/jobs", {
+    Faraday.post("http://localhost:3000/api/v1/jobs", {
       job_id: job["jid"],
       arguments: job["args"].to_json,
       job_class: job["class"],
@@ -49,7 +40,6 @@ end
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-
 module App
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
@@ -68,12 +58,11 @@ module App
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
     # This also configures session_options for use below
-    config.session_store :cookie_store, key: '_interslice_session'
-    
+    config.session_store :cookie_store, key: "_interslice_session"
+
     # Required for all session management (regardless of session_store)
     config.middleware.use ActionDispatch::Cookies
-    
-    config.middleware.use config.session_store, config.session_options
 
+    config.middleware.use config.session_store, config.session_options
   end
 end

@@ -2,8 +2,8 @@ FactoryBot.define do
   factory :job do
     queue { "queue" }
     arguments { "arguments" }
-    job_id {"job_id"}
-    job_class {"job_class"}
+    job_id { "job_id" }
+    job_class { "job_class" }
 
     factory :started_job do
       after(:create) do |job|

@@ -41,7 +41,7 @@ jobs:
           done   
       - name: Set up DB
         run: bundle exec rails db:schema:load RAILS_ENV=test
-      #- name: Run linter for Ruby
-        #run: bundle exec standardrb
+      - name: Run linter for Ruby
+        run: bundle exec standardrb
       - name: Run tests
         run: bundle exec rspec

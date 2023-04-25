@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Api::V1::Jobs", type: :request do
   describe "POST /" do
@@ -50,10 +50,8 @@ RSpec.describe "Api::V1::Jobs", type: :request do
       it "doesn't create a Job and returns 400" do
         post "/api/v1/jobs/my-job-id/complete", params: {}
         expect(Job.count).to eq(0)
-      expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:bad_request)
       end
     end
-    
   end
-
 end

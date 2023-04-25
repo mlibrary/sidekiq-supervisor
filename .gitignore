@@ -24,3 +24,5 @@ config/master.key
 
 .rdbg_history
 
+.irb_history
+.cache
