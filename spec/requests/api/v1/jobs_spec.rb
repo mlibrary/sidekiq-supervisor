@@ -8,7 +8,7 @@ RSpec.describe "Api::V1::Jobs", type: :request do
       expect(j.job_id).to eq("12345")
       expect(j.arguments).to eq("arguments")
       expect(j.job_class).to eq("JobClass")
-      expect(j.status).to eq("started")
+      expect(j.status).to eq("queued")
       expect(j.queue).to eq("queue")
       expect(response).to have_http_status(:success)
     end
@@ -17,6 +17,41 @@ RSpec.describe "Api::V1::Jobs", type: :request do
       post "/api/v1/jobs", params: {}
       expect(Job.count).to eq(0)
       expect(response).to have_http_status(:bad_request)
+    end
+  end
+  describe "POST /api/v1/jobs/:job_id/started" do
+    context "a job that exists" do
+      it "creates a new status 'started'" do
+        j = create(:job)
+        post "/api/v1/jobs/#{j.job_id}/started"
+        expect(Job.last.status).to eq("started")
+        expect(Status.last.name).to eq("started")
+        expect(response).to have_http_status(:success)
+      end
+    end
+    context "a job that doesn't exist" do
+      subject do
+        post "/api/v1/jobs/my-job-id/started", params: {arguments: "arguments", job_class: "JobClass", queue: "queue"}
+      end
+      it "creates a new job with status started" do
+        subject
+        expect(Job.last.job_id).to eq("my-job-id")
+        expect(Job.last.status).to eq("started")
+        expect(response).to have_http_status(:success)
+      end
+      it "does not have any status with started" do
+        subject
+        job = Job.last
+        expect(job.statuses.count).to eq(1)
+        expect(job.status).to eq("started")
+      end
+    end
+    context "no job and inadequeate params" do
+      it "doesn't create a Job and returns 400" do
+        post "/api/v1/jobs/my-job-id/complete", params: {}
+        expect(Job.count).to eq(0)
+        expect(response).to have_http_status(:bad_request)
+      end
     end
   end
   describe "POST /api/v1/jobs/:job_id/complete" do
