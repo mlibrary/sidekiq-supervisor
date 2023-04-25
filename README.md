@@ -4,6 +4,8 @@ This is a system for monitoring the completion of sidekiq jobs.
 
 ## API Endpoints
 
+This will create a job, and will mark it as queued
+
 ```
 post /api/v1/jobs
 ```
@@ -16,7 +18,8 @@ Which takes in the following parameters
 | job_class | the class used for the job |
 | queue     | the queue for the job |
 
-This will create a job, and will mark it as started
+
+This uses the sidekiq `job_id` to mark the job as having been started.
 
 ```
 post /api/v1/jobs/:job_id/started
@@ -28,7 +31,8 @@ Which takes in the following parameters
 | job_class | the class used for the job |
 | queue     | the queue for the job |
 
-This uses the sidekiq `job_id` to mark the job as having been started.
+
+This uses the sidekiq `job_id` to mark the job as done.
 
 ```
 post /api/v1/jobs/:job_id/complete
@@ -40,7 +44,6 @@ Which takes in the following parameters
 | job_class | the class used for the job |
 | queue     | the queue for the job |
 
-This uses the sidekiq `job_id` to mark the job as done.
 
 ## How to add Sidekiq monitor to your application
 
