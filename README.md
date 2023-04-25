@@ -51,7 +51,7 @@ making http request is fine.
 
 Any application that queues jobs needs to have the following middleware:
 
-```
+```ruby
 class JobQueued
   def call(worker, job, queue, redis_pool)
     response = Faraday.post("#{ENV.fetch("INDEXING_MONITOR_HOST")}/api/v1/jobs", {
@@ -63,6 +63,7 @@ class JobQueued
     yield
   end
 end
+
 Sidekiq.configure_client do |config|
   config.client_middleware do |chain|
     chain.add JobQueued
@@ -74,7 +75,7 @@ end
 Your sidekiq workers (or server) needs to have the following middleware so they
 can check with the supervisor. 
 
-```
+```ruby
 class CheckInCheckOut
   def call(worker, job, queue)
     response = Faraday.post("#{ENV.fetch("SIDEKIQ_SUPERVISOR_HOST")}/api/v1/jobs/#{job["jid"]}/started", {
