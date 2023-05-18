@@ -11,9 +11,9 @@ jobs:
       mariadb:
         image: mariadb:10
         env:
-          MARIADB_USER: monitor
-          MARIADB_PASSWORD: monitor_password
-          MARIADB_DATABASE: monitor_test
+          MARIADB_USER: supervisor
+          MARIADB_PASSWORD: supervisor_password
+          MARIADB_DATABASE: supervisor_test
           MARIADB_ROOT_PASSWORD: pass
         ports: ["3306:3306"]
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
